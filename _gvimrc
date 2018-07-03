@@ -1,0 +1,98 @@
+" vim:set ts=2 sts=2 sw=2 tw=0:
+
+if !has('gui_running')
+  finish
+endif
+
+colorscheme iceberg
+"colorscheme molokai
+"colorscheme jellybeans
+set background=dark
+
+set cursorline
+
+au GUIEnter * simalt ~x
+
+if has('win32') && !has('unix')
+  set guifont=Consolas:h8,Lucida_Console:h10:w5
+  set guifontwide=MS_Gothic:h9
+" set renderoptions=type:directx,renmode:5  "Windows 10 + Vim8
+" set guifont=源真ゴシック等幅_Medium:h7
+" set guifontwide=源真ゴシック等幅_Medium:h8
+" set guifontwide=源真ゴシック等幅:h9
+" set guifontwide=MS_Gothic:h9
+" set guifontwide=Gen_Shin_Gothic:h9
+  set linespace=0
+  if has('kaoriya')
+	set ambiwidth=auto
+  endif
+endif
+
+"set guioptions+=m
+set guioptions-=m
+set guioptions-=T
+set guioptions+=r
+set guioptions+=l
+set guioptions+=a
+
+set showtabline=2
+set guitablabel=%N\ %t
+set list
+set listchars=tab:.\ ,trail:_,extends:<
+
+set mouse=a
+
+let g:save_window_file=expand('$HOME/_vimwinpos')
+augroup SaveWindow
+  autocmd!
+  autocmd VimLeavePre * call s:save_window()
+  function! s:save_window()
+  	let options = [
+		  \ 'set columns=' . &columns,
+		  \ 'set lines='   . &lines,
+		  \ 'winpos '      . getwinposx() . ' ' . getwinposy(),
+		  \ ]
+  	call writefile(options, g:save_window_file)
+  endfunction
+augroup END
+
+if filereadable(g:save_window_file)
+  execute 'source' g:save_window_file
+endif
+
+function! GitBash()
+  let l:oldlang = $LANG
+  let $LANG = systemlist('"C:/Program Files/Git/usr/bin/locale.exe" -iU')[0]
+  let l:oldgvim = $GVIM
+  let l:oldvimserver = $VIM_SERVERNAME
+  let $GVIM = $VIMRUNTIME
+  let $VIM_SERVERNAME = v:servername
+
+  let l:oldvim = $VIM
+  let l:oldvimruntime = $VIMRUNTIME
+  let l:oldmyvimrc = $MYVIMRC
+  let l:oldmygvimrc = $MYGVIMRC
+  let $VIM = ''
+  let $VIMRUNTIME = ''
+  let $MYVIMRC = ''
+  let $MYGVIMRC = ''
+
+  if has('clientserver')
+  	let $VIM_SERVERNAME = v:servername
+  endif
+
+  lcd $USERPROFILE
+
+  terminal ++close C:/Program Files/Git/bin/bash.exe -l
+
+  let $LANG = l:oldlang
+  let $GVIM = l:oldgvim
+  let $VIM_SERVERNAME = l:oldvimserver
+  let $VIM = l:oldvim
+  let $VIMRUNTIME = l:oldvimruntime
+  let $MYVIMRC = l:oldmyvimrc
+  let $MYGVIMRC = l:oldmygvimrc
+  lcd ~
+endfunction
+
+nnoremap <silent><Leader>g :<C-u>call GitBash()<CR>
