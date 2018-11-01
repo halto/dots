@@ -15,7 +15,11 @@ call neobundle#begin(expand('$HOME/vimfiles/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 NeoBundle      'Shougo/unite.vim'
+NeoBundle      'Shougo/neomru.vim'
+NeoBundle      'Shougo/neoyank.vim'
 NeoBundle      'ujihisa/unite-colorscheme'
+NeoBundle      'thinca/vim-unite-history'
+NeoBundle      'ctrlpvim/ctrlp.vim'
 
 NeoBundle      'tomasr/molokai'
 NeoBundle      'cocopon/iceberg.vim'
@@ -356,6 +360,9 @@ endif
 let g:unite_enable_start_insert=1
 let g:unite_source_history_yank_enable=1
 "let g:unite_source_file_mru_limit=200
+
+call unite#filters#sorter_default#use(["sorter_word"])
+
 nnoremap <silent> ,ub :<C-u>Unite buffer<CR>
 nnoremap <silent> ,uy :<C-u>Unite history/yank<CR>
 nnoremap <silent> ,uf :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
@@ -372,6 +379,12 @@ let Tlist_Show_One_File = 1
 let Tlist_Use_Right_Window = 0
 let Tlist_Exit_OnlyWindow = 1
 map <silent> <Leader>l :TlistToggle<CR>
+
+nnoremap <c-j> :vsp<CR>   :exe("tjump " . expand('<cword>'))<CR>
+nnoremap <c-k> :split<CR> :exe("tjump " . expand('<cword>'))<CR>
+
+map <c-\> :tab split<CR>:exec("tag " . expand("<cword>"))<CR>
+map <leader><c-\> :vsp<CR>:exec("tag " . expand("<cword>"))<CR>
 
 "" VCSCommand
 "augroup VCSCommand
